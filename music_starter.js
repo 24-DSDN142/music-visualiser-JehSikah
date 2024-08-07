@@ -3,41 +3,64 @@
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
   background(20)
   textFont('Verdana'); // please use CSS safe fonts
-  rectMode(CENTER)
+  rectMode(CENTER);
   textSize(24);
-  
-   let bar_spacing = height / 10;
-   let bar_height = width / 12;
-   let bar_pos_x = width / 2;
- 
 
-   // vocal bar is red
-   fill(200, 0, 0);
-   rect(bar_pos_x, height / 2 + 1 * bar_spacing, 4 * vocal, bar_height);
-   fill(0);
-   text("vocals", bar_pos_x, height / 2 + 1 * bar_spacing + 8);
- 
-   // drum bar is green
-   fill(0, 200, 0);
-   rect(bar_pos_x, height / 2 + 2 * bar_spacing, 4 * drum, bar_height);
-   fill(0);
-   text("drums", bar_pos_x, height / 2 + 2 * bar_spacing + 8);
- 
-   // bass bar is blue
-   fill(50, 50, 240);
-   rect(bar_pos_x, height / 2 + 3 * bar_spacing, 4 * bass, bar_height);
-   fill(0);
-   text("bass", bar_pos_x, height / 2 + 3 * bar_spacing + 8);
- 
-   // other bar is white
-   fill(200, 200, 200);
-   rect(bar_pos_x, height / 2 + 4 * bar_spacing, 4 * other, bar_height);
-   fill(0);
-   text("other", bar_pos_x, height / 2 + 4 * bar_spacing + 8);
-   fill(255, 255, 0);
- 
-   // display "words"
-   textAlign(CENTER);
-   textSize(vocal);
-   text(words, width/2, height/3);
+  push();
+  let lurk = counter/9500 + 0.01;
+  scale(lurk);
+
+  // fill(255);
+  // ellipse(0, 0, 20, 20);
+
+  nightmare(vocal, drum, bass, other);
+  pop();
+}
+
+function nightmare(vocal, drum, bass, other) {
+  noStroke();
+
+  //eye whites
+  fill(255);
+  ellipse(width/4, 200, 200, 100);
+  ellipse(3*width/4, 200, 200, 100);
+
+  //iris
+  let dcolour = map(drum, 0, 100, 100, 255);
+  let bcolour = map(bass, 0, 100, 100, 255);
+  let ocolour = map(other, 0, 100, 100, 255);
+  fill(dcolour, bcolour, ocolour);
+  ellipse(width/4, 200, 100, 100);
+  ellipse(3*width/4, 200, 100, 100);
+
+  //nostrils
+  fill(255);
+  ellipse(width/2 - 15, 300, 7, 20); //left
+  ellipse(width/2 + 15, 300, 7, 20); //right
+
+  //inner mouth
+  fill(255);
+  arc(width/2, 350, 500, 200, 0, 180);
+
+  //teeth
+  stroke(0);
+  strokeWeight(4);
+
+  line(width/2 - 200, 350, width/2 - 200, 550); 
+  line(width/2 - 150, 350, width/2 - 150, 550); 
+  line(width/2 - 100, 350, width/2 - 100, 550); 
+  line(width/2 - 50, 350, width/2 - 50, 550); // left
+  line(width/2, 350, width/2, 550); //mid
+  line(width/2 + 50, 350, width/2 + 50, 550); // right
+  line(width/2 + 100, 350, width/2 + 100, 550); 
+  line(width/2 + 150, 350, width/2 + 150, 550); 
+  line(width/2 + 200, 350, width/2 + 200, 550); 
+
+  //moving mouth
+  noStroke();
+
+  let talk = map(vocal, 0, 100, 190, 0);
+  fill(0);
+  arc(width/2, 348, 502, talk, 0, 180);
+
 }
