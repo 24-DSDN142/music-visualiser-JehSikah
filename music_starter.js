@@ -33,34 +33,36 @@ function nightmare(vocal, drum, bass, other) {
   ellipse(width/4, 200, 100, 100);
   ellipse(3*width/4, 200, 100, 100);
 
-  //nostrils
-  fill(255);
-  ellipse(width/2 - 15, 300, 7, 20); //left
-  ellipse(width/2 + 15, 300, 7, 20); //right
+  // //nostrils
+  // fill(255);
+  // ellipse(width/2 - 15, 300, 7, 20); //left
+  // ellipse(width/2 + 15, 300, 7, 20); //right
+
+  let mouthup = 300;
 
   //inner mouth
   fill(255);
-  arc(width/2, 350, 500, 200, 0, 180);
+  arc(width/2, mouthup, 500, 200, 0, 180);
 
   //teeth
   stroke(0);
   strokeWeight(4);
 
-  line(width/2 - 200, 350, width/2 - 200, 550); 
-  line(width/2 - 150, 350, width/2 - 150, 550); 
-  line(width/2 - 100, 350, width/2 - 100, 550); 
-  line(width/2 - 50, 350, width/2 - 50, 550); // left
-  line(width/2, 350, width/2, 550); //mid
-  line(width/2 + 50, 350, width/2 + 50, 550); // right
-  line(width/2 + 100, 350, width/2 + 100, 550); 
-  line(width/2 + 150, 350, width/2 + 150, 550); 
-  line(width/2 + 200, 350, width/2 + 200, 550); 
+  line(width/2 - 200, mouthup, width/2 - 200, mouthup + 200); 
+  line(width/2 - 150, mouthup, width/2 - 150, mouthup + 200); 
+  line(width/2 - 100, mouthup, width/2 - 100, mouthup + 200); 
+  line(width/2 - 50, mouthup, width/2 - 50, mouthup + 200); // left
+  line(width/2, mouthup, width/2, mouthup + 200); //mid
+  line(width/2 + 50, mouthup, width/2 + 50, mouthup + 200); // right
+  line(width/2 + 100, mouthup, width/2 + 100, mouthup + 200); 
+  line(width/2 + 150, mouthup, width/2 + 150, mouthup + 200); 
+  line(width/2 + 200, mouthup, width/2 + 200, mouthup + 200); 
 
   //moving mouth
   noStroke();
 
   let talk = map(vocal, 0, 100, 190, 0);
   fill(0);
-  arc(width/2, 348, 502, talk, 0, 180);
+  arc(width/2, mouthup - 2, 502, talk, 0, 180);
 
 }
