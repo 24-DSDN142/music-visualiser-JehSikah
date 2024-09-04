@@ -1,18 +1,35 @@
+let firstRun = true;
+let eyeAng;
+let eyeNorm;
+let mouthClos;
+let mouthOpe;
+
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
-  background(20);
-  textFont('Verdana'); // please use CSS safe fonts
-  rectMode(CENTER);
-  textSize(24);
+  if (firstRun) {
+    eyeAng = loadImage("image/eyeAng.png")
+    eyeNorm = loadImage("image/eyeNorm.png")
+    mouthClos = loadImage("image/mouthClos.png")
+    mouthOpe = loadImage("image/mouthOpe.png")
 
-  push();
-  translate(canvasWidth/2, canvasHeight/2);
-  let lurk = counter/9500 + 0.01;
-  // scale(lurk);
-  nightmarepix(vocal, drum, bass, other);
-  grid2();
-  pop();
+    firstRun = false;
+  }
+
+  // background(200);
+  // textFont('Verdana'); // please use CSS safe fonts
+  // rectMode(CENTER);
+  // textSize(24);
+
+  // push();
+  // translate(canvasWidth/2, canvasHeight/2);
+  // let lurk = counter/9500 + 0.01;
+  // // scale(lurk);
+  // nightmarepix(vocal, drum, bass, other);
+  // grid2();
+  // pop();
+
+  imagetry(vocal, drum, bass, other);
 
   frame();
 }
@@ -142,5 +159,11 @@ function nightmarepix(vocal, drum, bass, other) {
 
   fill(20);
   rect(0, )
+
+}
+
+function imagetry(vocal, drum, bass, other) {
+
+  image(eyeimg, 0, 0, 200, 400);
 
 }
