@@ -1,24 +1,31 @@
+//preload images
 let firstRun = true;
+
+//image variables
 let eyeAng;
 let eyeNorm;
 let mouthClos;
 let mouthOpe;
 
+//other
+let faceSize = 800;
+let faceOffset = 30;
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
   if (firstRun) {
-    eyeAng = loadImage("image/eyeAng.png")
-    eyeNorm = loadImage("image/eyeNorm.png")
-    mouthClos = loadImage("image/mouthClos.png")
-    mouthOpe = loadImage("image/mouthOpe.png")
+    eyeAng = loadImage("images/eyeAng.png")
+    eyeNorm = loadImage("images/eyeNorm.png")
+    mouthClos = loadImage("images/mouthClos.png")
+    mouthOpe = loadImage("images/mouthOpe.png")
 
     firstRun = false;
   }
-
-  // background(200);
+  rectMode(CENTER);
+  imageMode(CENTER);
+  background(50);
+  noStroke();
   // textFont('Verdana'); // please use CSS safe fonts
-  // rectMode(CENTER);
   // textSize(24);
 
   // push();
@@ -29,33 +36,49 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // grid2();
   // pop();
 
-  imagetry(vocal, drum, bass, other);
+  push();
+  translate(width/2, height/2);
+  musicbar(vocal, drum, bass, other);
 
-  frame();
+
+  rotate(counter/2);
+
+  bob = map(drum, 0, 100, -20, 20);
+  translate(0, bob);
+
+  imagetry(words, vocal, drum, bass, other);
+  pop();
+
+  //frame();
+
+  overlay(counter);
+}
+
+function overlay(counter) {
+  dead = map(counter, 0, 12053, 0, 40);
+  fill(255, 50, 50, dead);
+  rect(width/2, height/2, width, height);
 }
 
 function frame() {
   let frameThicc = 80;
   let frameShad = frameThicc + 20;
   let frameBot = 60;
-  noStroke();
+
 
   //frame inset
   fill(100);
-  rect(canvasWidth/2, 0, canvasWidth, frameShad); //top
-  rect(canvasWidth/2, canvasHeight, canvasWidth, frameShad + frameBot); //bot
-  rect(0, canvasHeight/2, frameShad, canvasHeight); //left
-  rect(canvasWidth, canvasHeight/2, frameShad, canvasHeight); //right
+  rect(width/2, 0, width, frameShad); //top
+  rect(width/2, height, width, frameShad + frameBot); //bot
+  rect(0, height/2, frameShad, height); //left
+  rect(width, height/2, frameShad, height); //right
 
   //outer frame
   fill(120);
-  rect(canvasWidth/2, 0, canvasWidth, frameThicc); //top
-  rect(canvasWidth/2, canvasHeight, canvasWidth, frameThicc + frameBot); //bot
-  rect(0, canvasHeight/2, frameThicc, canvasHeight); //left
-  rect(canvasWidth, canvasHeight/2, frameThicc, canvasHeight); //right
-
-  fill(200, 160, 100);
-  ellipse(canvasWidth - 30, canvasHeight - 30, 30, 30);
+  rect(width/2, 0, width, frameThicc); //top
+  rect(width/2, height, width, frameThicc + frameBot); //bot
+  rect(0, height/2, frameThicc, height); //left
+  rect(width, height/2, frameThicc, height); //right
 }
 
 function grid() {
@@ -162,8 +185,49 @@ function nightmarepix(vocal, drum, bass, other) {
 
 }
 
-function imagetry(vocal, drum, bass, other) {
+function imagetry(words, vocal, drum, bass, other) {
+  let eyeType = eyeNorm; //change between norm and ang
+  let mouthType = mouthClos;
 
-  image(eyeimg, 0, 0, 200, 400);
+  if (words == ""){
+    mouthType = mouthClos;
+    faceOffset = 30;
+  } else {
+    mouthType = mouthOpe;
+    faceOffset = 10;
+  }
+  image(mouthType, 0, faceOffset, faceSize, faceSize);
+  
+  //eye stuff
+  let dcolour = map(drum, 0, 100, 100, 255);
+  let bcolour = map(bass, 0, 100, 100, 255);
+  let ocolour = map(other, 0, 100, 100, 255);
+  fill(dcolour, bcolour, ocolour);
+
+  rect(-110, faceOffset - 110, 45, 50); //left pupil
+  rect(110, faceOffset - 110, 45, 50); //left pupil
+
+  image(eyeType, 0, faceOffset, faceSize, faceSize); //left eye
+  push();
+  scale(-1, 1);
+  image(eyeType, 0, faceOffset, faceSize, faceSize); //right eye
+  pop();
+
+}
+
+let barWidth = 175;
+function musicbar(vocal, drum, bass, other){
+
+  fill(100);
+
+  let vmap = map(vocal, 0, 100, 10, 800);
+  let dmap = map(drum, 0, 100, 10, 800);
+  let bmap = map(bass, 0, 100, 10, 800);
+  let omap = map(other, 0, 100, 10, 800);
+
+  rect(-300, 200, barWidth, vmap);
+  rect(-100, 200, barWidth, dmap);
+  rect(100, 200, barWidth, bmap);
+  rect(300, 200, barWidth, omap);
 
 }
