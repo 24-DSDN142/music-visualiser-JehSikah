@@ -49,7 +49,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   imagetry(words, vocal, drum, bass, other);
   pop();
 
-  //frame();
+  frame();
 
   overlay(counter);
 }
