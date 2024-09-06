@@ -25,6 +25,8 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   imageMode(CENTER);
   background(50);
   noStroke();
+
+  console.log(counter);
   // textFont('Verdana'); // please use CSS safe fonts
   // textSize(24);
 
@@ -225,9 +227,16 @@ function musicbar(vocal, drum, bass, other){
   let bmap = map(bass, 0, 100, 10, 800);
   let omap = map(other, 0, 100, 10, 800);
 
+  fill(160, 40, 220);
   rect(-300, 200, barWidth, vmap);
+
+  fill(220, 40, 40);
   rect(-100, 200, barWidth, dmap);
+
+  fill(40, 220, 200);
   rect(100, 200, barWidth, bmap);
+
+  fill(220, 130, 40);
   rect(300, 200, barWidth, omap);
 
 }
