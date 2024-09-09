@@ -62,7 +62,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   //   background(0, 100, 0);
   // }
 
-  console.log(timer);
+  //console.log(timer);
 
   // push();
   // translate(canvasWidth/2, canvasHeight/2);
@@ -74,7 +74,9 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
   push();
   translate(width/2, height/2); //center face
-  musicbar(vocal, drum, bass, other);
+  
+  //musicbar(vocal, drum, bass, other);
+  vocaliser(vocal);
 
   scale(0.8); //fit face in screen while spinning
   //rotate(counter);
@@ -82,10 +84,10 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   bob = map(bass, 0, 100, -20, 20);
   translate(0, bob);
 
-  imagetry(words, vocal, drum, bass, other, counter);
+  //imagetry(words, vocal, drum, bass, other, counter);
   pop();
 
-  frame();
+  frame2();
 
   overlay(counter);
 
@@ -104,6 +106,27 @@ function frame() {
   let frameThicc = 80;
   let frameShad = frameThicc + 20;
   let frameBot = 60;
+
+
+  //frame inset
+  fill(100);
+  rect(width/2, 0, width, frameShad); //top
+  rect(width/2, height, width, frameShad + frameBot); //bot
+  rect(0, height/2, frameShad, height); //left
+  rect(width, height/2, frameShad, height); //right
+
+  //outer frame
+  fill(120);
+  rect(width/2, 0, width, frameThicc); //top
+  rect(width/2, height, width, frameThicc + frameBot); //bot
+  rect(0, height/2, frameThicc, height); //left
+  rect(width, height/2, frameThicc, height); //right
+}
+
+function frame2() {
+  let frameThicc = 80;
+  let frameShad = frameThicc + 20;
+  let frameBot = 0;
 
 
   //frame inset
@@ -284,8 +307,8 @@ function imagetry(words, vocal, drum, bass, other, counter) {
 
 }
 
-let barWidth = 175;
 function musicbar(vocal, drum, bass, other){
+  let barWidth = 175;
 
   fill(100);
 
@@ -309,7 +332,30 @@ function musicbar(vocal, drum, bass, other){
 }
 
 function vocaliser(vocal){
-  
+  let barWidth = 15;
+  let barSpace = 7;
+  let barDiv = 25;
+  let barVar;
+
+  let barMap = map(vocal, 0, 100, 2, 100);
+
+  fill(255);
+  //right side of sound wave thing
+  for (let bar = 0; bar <= width; bar += barSpace) {
+    barVar = bar/barDiv;
+
+    rect(3*bar, 0, barWidth, barMap / barVar);
+  }
+
+  //middle bar cause 0/something doesn't make anything
+  rect(0, 0, barWidth, barMap * 5);
+
+  //left side of sound wave thing
+  for (let bar = 0; bar >= -width; bar -= barSpace) {
+    barVar = -bar/barDiv;
+
+    rect(3*bar, 0, barWidth, barMap / barVar);
+  }
 }
 
 
