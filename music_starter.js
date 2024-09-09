@@ -52,9 +52,17 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   //   beat += 43;
   // }
 
-  if (bass >= 70) {
+  let othVol = 70;
+  let basVol = 63;
+
+  if (bass >= basVol) {
     background(100, 0, 0);
+  } else if (other >= othVol) {
+    background(0, 0, 100);
   }
+
+  
+
 
   // if (counter == firstBeat){
   //   background(100, 0, 0);
@@ -88,6 +96,14 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   pop();
 
   frame2();
+
+  if (bass >= basVol) {
+    fill(200, 0, 0, 40);
+    rect(width/2, height/2, width, height);
+  } else if (other >= othVol) {
+    fill(0, 0, 200, 40);
+    rect(width/2, height/2, width, height);
+  }
 
   overlay(counter);
 
