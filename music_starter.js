@@ -7,12 +7,29 @@ let eyeNorm;
 let mouthClos;
 let mouthOpe;
 
+//timing variables
+let countMax = 20456; //end of song
+let firstBeat = 149; //first beat of song
+
+let chor1 = [812, 2545];
+let chor2 = [5290, 7004];
+let chor3 = [9747, 15]
+
+let crash = [65, 84, 106, 127]; 
+
+let timer = 0;
+let beat = 0;
+
 //other
 let faceSize = 800;
 let faceOffset = 30;
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
+  rectMode(CENTER);
+  imageMode(CENTER);
+  noStroke();
+  
   if (firstRun) {
     eyeAng = loadImage("images/eyeAng.png")
     eyeNorm = loadImage("images/eyeNorm.png")
@@ -21,14 +38,31 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
     firstRun = false;
   }
-  rectMode(CENTER);
-  imageMode(CENTER);
-  background(50);
-  noStroke();
 
-  console.log(counter);
-  // textFont('Verdana'); // please use CSS safe fonts
-  // textSize(24);
+  background(50);
+  
+  if (songIsPlaying) {
+    timer ++;
+  } else {
+    timer = 0;
+  }
+
+  // if (timer == firstBeat + beat) {
+  //   background(100, 0, 0);
+  //   beat += 43;
+  // }
+
+  if (bass >= 70) {
+    background(100, 0, 0);
+  }
+
+  // if (counter == firstBeat){
+  //   background(100, 0, 0);
+  // } else if (counter >= 325) {
+  //   background(0, 100, 0);
+  // }
+
+  console.log(timer);
 
   // push();
   // translate(canvasWidth/2, canvasHeight/2);
@@ -39,21 +73,25 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // pop();
 
   push();
-  translate(width/2, height/2);
+  translate(width/2, height/2); //center face
   musicbar(vocal, drum, bass, other);
 
+  scale(0.8); //fit face in screen while spinning
+  //rotate(counter);
 
-  rotate(counter/2);
-
-  bob = map(drum, 0, 100, -20, 20);
+  bob = map(bass, 0, 100, -20, 20);
   translate(0, bob);
 
-  imagetry(words, vocal, drum, bass, other);
+  imagetry(words, vocal, drum, bass, other, counter);
   pop();
 
   frame();
 
   overlay(counter);
+
+  fill(0);
+  text(beat+firstBeat, 30, 30);
+
 }
 
 function overlay(counter) {
@@ -187,7 +225,7 @@ function nightmarepix(vocal, drum, bass, other) {
 
 }
 
-function imagetry(words, vocal, drum, bass, other) {
+function imagetry(words, vocal, drum, bass, other, counter) {
   let eyeType = eyeNorm; //change between norm and ang
   let mouthType = mouthClos;
 
@@ -198,16 +236,45 @@ function imagetry(words, vocal, drum, bass, other) {
     mouthType = mouthOpe;
     faceOffset = 10;
   }
-  image(mouthType, 0, faceOffset, faceSize, faceSize);
   
+  // if (counter >= chor1[0] && counter <= chor1[1]) {
+  //   eyeType = eyeNorm;
+  //   mouthType = mouthClos;
+
+  // } else if (counter >= chor2[0] && counter <= chor2[1]) {
+  //   eyeType = eyeNorm;
+  //   mouthType = mouthClos;
+
+  // } else if (counter >= chor3[0] && counter <= chor3[1]) {
+  //   eyeType = eyeNorm;
+  //   mouthType = mouthClos;
+
+  // } else {
+  //   eyeType = eyeAng;
+  // }
+
+  if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
+    eyeType = eyeNorm;
+    mouthType = mouthClos;
+    faceOffset = 10;
+  } else {
+    eyeType = eyeAng;
+  }
+
+  image(mouthType, 0, faceOffset, faceSize, faceSize);
+
   //eye stuff
   let dcolour = map(drum, 0, 100, 100, 255);
   let bcolour = map(bass, 0, 100, 100, 255);
   let ocolour = map(other, 0, 100, 100, 255);
-  fill(dcolour, bcolour, ocolour);
 
-  rect(-110, faceOffset - 110, 45, 50); //left pupil
-  rect(110, faceOffset - 110, 45, 50); //left pupil
+  let dcolour2 = map(drum, 50, 100, 0, 255);
+
+  // fill(dcolour, bcolour, ocolour);
+  fill(255, dcolour2, 0);
+
+  rect(-110, faceOffset - 120, 45, 50); //left pupil
+  rect(110, faceOffset - 120, 45, 50); //left pupil
 
   image(eyeType, 0, faceOffset, faceSize, faceSize); //left eye
   push();
@@ -240,3 +307,11 @@ function musicbar(vocal, drum, bass, other){
   rect(300, 200, barWidth, omap);
 
 }
+
+function vocaliser(vocal){
+  
+}
+
+
+  // textFont('Verdana'); // please use CSS safe fonts
+  // textSize(24);
