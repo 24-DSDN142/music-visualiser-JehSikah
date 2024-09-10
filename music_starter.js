@@ -183,18 +183,19 @@ function soundwave(instrument){
   let barWidth = 15;
   let barSpace = barWidth + 5;
   let barSlope;
-  let barMap = map(instrument, 0, 100, 2, 100);
+  let barMap = map(instrument, 0, 100, 2, 250);
 
   fill(255);
-  
-  let iSpace = 2;
-  for (let i = -iSpace; i <= iSpace; i + barSpace){
+
+  for (let i = -width; i <= width; i ++){
     if (i < 0) {
       barSlope = -i;
+    } else if (i == 0){
+      barSlope = 0.5;
     } else {
       barSlope = i;
     }
-    rect(barSpace * i, 0, barWidth, barMap / barSlope);
+    rect(barSpace * i, 0, barWidth, barMap/barSlope);
   }
 }
   // textFont('Verdana'); // please use CSS safe fonts
