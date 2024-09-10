@@ -84,7 +84,9 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   translate(width/2, height/2); //center face
   
   //musicbar(vocal, drum, bass, other);
-  vocaliser(vocal);
+  //vocaliser(vocal);
+
+  soundwave(vocal);
 
   scale(0.8); //fit face in screen while spinning
   //rotate(counter);
@@ -374,6 +376,25 @@ function vocaliser(vocal){
   }
 }
 
+function soundwave(instrument){
+  let barWidth = 15;
+  let barSpace = barWidth + 5;
+  let barSlope;
+  let barMap = map(instrument, 0, 100, 2, 100);
 
+  fill(255);
+  
+  //middle bar cause 0/something doesn't make anything
+  //rect(barSpace * i, 0, barWidth, barMap * 5);
+  let iSpace = 5;
+  for (let i = -iSpace; i <= iSpace; i + barSpace){
+    if (i < 0) {
+      barSlope = -i;
+    } else {
+      barSlope = i;
+    }
+    rect(barSpace * i, 0, barWidth, barMap / 2^barSlope);
+  }
+}
   // textFont('Verdana'); // please use CSS safe fonts
   // textSize(24);
