@@ -13,7 +13,7 @@ let firstBeat = 149; //first beat of song
 
 let chor1 = [812, 2545];
 let chor2 = [5290, 7004];
-let chor3 = [9747, 15]
+let chor3 = [9747, 15000];
 
 let crash = [65, 84, 106, 127]; 
 
@@ -23,6 +23,9 @@ let beat = 0;
 //other
 let faceSize = 800;
 let faceOffset = 30;
+
+let barWidth = 15;
+let barSpace = barWidth + 5;
 
 // vocal, drum, bass, and other are volumes ranging from 0 to 100
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
@@ -39,45 +42,50 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     firstRun = false;
   }
 
-  background(50);
-  
-  // if (songIsPlaying) {
-  //   timer ++;
-  // } else {
-  //   timer = 0;
-  // }
-
-  // if (timer == firstBeat + beat) {
-  //   background(100, 0, 0);
-  //   beat += 43;
-  // }
+  background(40);
 
   let othVol = 70;
   let basVol = 63;
-
+  //flashes red to bass
   if (bass >= basVol) {
     background(100, 0, 0);
-  } else if (other >= othVol) {
-    background(0, 0, 100);
-  }
-
-  // if (counter == firstBeat){
-  //   background(100, 0, 0);
-  // } else if (counter >= 325) {
-  //   background(0, 100, 0);
+  } 
+  // else if (other >= othVol) {
+  //   background(0, 0, 100);
   // }
 
   push();
   translate(width/2, height/2); //center face
+
+  //set sound waves during chorus, face during verse
+  if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
+    
+    // push();
+    // translate(340, 0);
+    // soundwave(vocal, 1);
+    // pop();
+
+    graph(vocal, 0, 1, 340);
+
+    graph(drum, drum, 1.5, 160);
+
+    graph(other, drum, 2.5, -320);
+    
+
+    // push();
+    // translate(340, 0);
+    // soundwave(other, 2);
+    // pop();
+
+
+  } else if (counter > chor1[1] && counter < chor2[0] || counter > chor2[1] && counter < chor3[0]) {
+    verse(words, vocal, drum, bass, other, counter);
+  }
   
-  soundwave(vocal);
 
-  scale(0.8); //fit face in screen while spinning
-  //rotate(counter);
+ 
 
-  bob = map(bass, 0, 100, -20, 20);
-  translate(0, bob);
-  //imagetry(words, vocal, drum, bass, other, counter);
+
   pop();
 
   frame();
@@ -85,12 +93,38 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   if (bass >= basVol) {
     fill(200, 0, 0, 40);
     rect(width/2, height/2, width, height);
-  } else if (other >= othVol) {
-    fill(0, 0, 200, 40);
-    rect(width/2, height/2, width, height);
-  }
+  } 
+  // else if (other >= othVol) {
+  //   fill(0, 0, 200, 40);
+  //   rect(width/2, height/2, width, height);
+  // }
 
   overlay(counter);
+}
+
+function graph(wave, move, resize, displace){
+  let barMove;
+  if (move == 0) {
+    barMove = 0;
+  } else {
+    barMove = map(move, 0, 100, -5, 5);
+  }
+  
+  push();
+  translate(int(barMove) * barSpace + displace, 0);
+  soundwave(wave, resize);
+  pop();
+}
+
+function verse(words, vocal, drum, bass, other, counter){
+  push();
+  scale(0.9); //fit face in screen while spinning
+  //rotate(counter);
+
+  bob = map(bass, 0, 100, -30, 30);
+  translate(0, bob);
+  imagetry(words, drum, bass, other, counter);
+  pop();
 }
 
 function overlay(counter) {
@@ -120,73 +154,48 @@ function frame() {
   rect(width, height/2, frameThicc, height); //right
 }
 
-function imagetry(words, vocal, drum, bass, other, counter) {
-  let eyeType = eyeNorm; //change between norm and ang
-  let mouthType = mouthClos;
+function imagetry(words, drum, bass, other, counter) {
+  let eyeType; 
+  let mouthType;
 
+  //mouth stuff, opend mouth when words are said
   if (words == ""){
     mouthType = mouthClos;
-    faceOffset = 30;
   } else {
     mouthType = mouthOpe;
-    faceOffset = 10;
   }
   
-  // if (counter >= chor1[0] && counter <= chor1[1]) {
-  //   eyeType = eyeNorm;
-  //   mouthType = mouthClos;
-
-  // } else if (counter >= chor2[0] && counter <= chor2[1]) {
-  //   eyeType = eyeNorm;
-  //   mouthType = mouthClos;
-
-  // } else if (counter >= chor3[0] && counter <= chor3[1]) {
-  //   eyeType = eyeNorm;
-  //   mouthType = mouthClos;
-
-  // } else {
-  //   eyeType = eyeAng;
-  // }
-
+  //makes eyes normal and closes mouth when chorus plays since words dont sync
   if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
     eyeType = eyeNorm;
     mouthType = mouthClos;
-    faceOffset = 10;
   } else {
     eyeType = eyeAng;
   }
-
   image(mouthType, 0, faceOffset, faceSize, faceSize);
 
   //eye stuff
-  let dcolour = map(drum, 0, 100, 100, 255);
-  let bcolour = map(bass, 0, 100, 100, 255);
-  let ocolour = map(other, 0, 100, 100, 255);
+  let dcolour = map(drum, 50, 100, 0, 255);
 
-  let dcolour2 = map(drum, 50, 100, 0, 255);
-
-  // fill(dcolour, bcolour, ocolour);
-  fill(255, dcolour2, 0);
+  fill(255, dcolour, 0); //changes pupil colour based off drum
 
   rect(-110, faceOffset - 120, 45, 50); //left pupil
-  rect(110, faceOffset - 120, 45, 50); //left pupil
+  rect(110, faceOffset - 120, 45, 50); //right pupil
 
-  image(eyeType, 0, faceOffset, faceSize, faceSize); //left eye
+  image(eyeType, 0, 30, faceSize, faceSize); //left eye
   push();
   scale(-1, 1);
-  image(eyeType, 0, faceOffset, faceSize, faceSize); //right eye
+  image(eyeType, 0, 30, faceSize, faceSize); //right eye
   pop();
-
 }
 
-function soundwave(instrument){
-  let barWidth = 15;
-  let barSpace = barWidth + 5;
+function soundwave(instrument, resize){
+  
   let barSlope;
   let barMap = map(instrument, 0, 100, 2, 250);
 
   fill(255);
-
+  //draws sound bars across the entire canvas, makes bars smaller the further away from the middle bar they are
   for (let i = -width; i <= width; i ++){
     if (i < 0) {
       barSlope = -i;
@@ -195,8 +204,8 @@ function soundwave(instrument){
     } else {
       barSlope = i;
     }
-    rect(barSpace * i, 0, barWidth, barMap/barSlope);
+    rect(barSpace * i, 0, barWidth, barMap/barSlope/resize);
   }
 }
-  // textFont('Verdana'); // please use CSS safe fonts
+  // textFont('Brush Script MT'); // please use CSS safe fonts
   // textSize(24);
