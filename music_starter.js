@@ -6,6 +6,7 @@ let eyeAng;
 let eyeNorm;
 let mouthClos;
 let mouthOpe;
+let static;
 
 //timing variables
 let countMax = 20456; //end of song
@@ -34,81 +35,96 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   noStroke();
   
   if (firstRun) {
-    eyeAng = loadImage("images/eyeAng.png")
-    eyeNorm = loadImage("images/eyeNorm.png")
-    mouthClos = loadImage("images/mouthClos.png")
-    mouthOpe = loadImage("images/mouthOpe.png")
+    eyeAng = loadImage("images/eyeAng.png");
+    eyeNorm = loadImage("images/eyeNorm.png");
+    mouthClos = loadImage("images/mouthClos.png");
+    mouthOpe = loadImage("images/mouthOpe.png");
+    static = loadImage('images/static');
 
     firstRun = false;
   }
 
-  background(40);
-
   let othVol = 70;
   let basVol = 63;
-  //flashes red to bass
-  if (bass >= basVol) {
-    background(100, 0, 0);
-  } 
-  // else if (other >= othVol) {
-  //   background(0, 0, 100);
-  // }
 
+  //center everything so I can build around (0, 0).  
   push();
-  translate(width/2, height/2); //center face
+  translate(width/2, height/2);
 
-  //set sound waves during chorus, face during verse
-  if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
+  //plays intro sequence then main song
+  let oop = 60
+  let screenSize = 1;
+  // rect(0, 0, 96 * screenSize, 54 * screenSize);
+
+    //screenSize ++;
+
+  if (oop <= crash[0]) {
+   
+
+
+    //box back
+    fill(100);
+    rect(0, -30, 130, 80)
+    triangle(-65, -70, -96, -54, 0, 0);
+    triangle(65, -70, 96, -54, 0, 0);
+
+    //screen
+    fill(120);
+    rect(0, 0, 96 * 2, 54 * 2);
+    fill(100);
+    rect(0, 0, 96 * 2 - 15, 54 * 2 - 15);
+
+    image(static, 0, 0, 96 * 2 - 20, 54 * 2 - 20)
+  } else if (oop <= crash[1]) {
+
+  } else if (oop <= crash[2]) {
+
+  } else {
+    background(40);
+
+    //flashes red to bass
+    if (bass >= basVol) {
+    background(100, 0, 0);
+     } 
+    // else if (other >= othVol) {
+    //   background(0, 0, 100);
+    // }
+
+    //set sound waves during chorus, face during verse
+    if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
+      graph(vocal, 0, 1, 340);
+      graph(drum, drum, 1.5, 160);
+      graph(other, drum, 2.5, -320);
+    } else if (counter > chor1[1] && counter < chor2[0] || counter > chor2[1] && counter < chor3[0]) {
+      verse(words, vocal, drum, bass, other, counter);
+    }
     
-    // push();
-    // translate(340, 0);
-    // soundwave(vocal, 1);
-    // pop();
+    frame();
 
-    graph(vocal, 0, 1, 340);
-
-    graph(drum, drum, 1.5, 160, 5);
-
-    graph(other, bass, 2.5, -320, 8);
-    
-
-    // push();
-    // translate(340, 0);
-    // soundwave(other, 2);
-    // pop();
-
-
-  } else if (counter > chor1[1] && counter < chor2[0] || counter > chor2[1] && counter < chor3[0]) {
-    verse(words, vocal, drum, bass, other, counter);
-  }
+    if (bass >= basVol) {
+      fill(200, 0, 0, 40);
+      rect(width/2, height/2, width, height);
+    } 
+    // else if (other >= othVol) {
+    //   fill(0, 0, 200, 40);
+    //   rect(width/2, height/2, width, height);
+    // }
   
-
+    overlay(counter);
+  }
  
-
-
   pop();
 
-  frame();
 
-  if (bass >= basVol) {
-    fill(200, 0, 0, 40);
-    rect(width/2, height/2, width, height);
-  } 
-  // else if (other >= othVol) {
-  //   fill(0, 0, 200, 40);
-  //   rect(width/2, height/2, width, height);
-  // }
-
-  overlay(counter);
+  
 }
 
-function graph(wave, map, resize, displace, move){
+function graph(wave, move, resize, displace){
   let barMove;
-  move = move || 0;
-  if (map === 0) {
+  if (move == 0) {
     barMove = 0;
   } else {
-    barMove = map(map, 0, 100, -move, move);
+    barMove = map(move, 0, 100, -5, 5);
   }
   
   push();
@@ -129,7 +145,7 @@ function verse(words, vocal, drum, bass, other, counter){
 }
 
 function overlay(counter) {
-  dead = map(counter, 0, 12053, 0, 40);
+  dead = map(counter, crash[3], 12053, 0, 40);
   fill(255, 50, 50, dead);
   rect(width/2, height/2, width, height);
 }
@@ -137,22 +153,23 @@ function overlay(counter) {
 function frame() {
   let frameThicc = 80;
   let frameShad = frameThicc + 20;
-  let frameBot = 0;
+  let frameCol;
+  let frameEdge;
 
-
-  //frame inset
-  fill(100);
-  rect(width/2, 0, width, frameShad); //top
-  rect(width/2, height, width, frameShad + frameBot); //bot
-  rect(0, height/2, frameShad, height); //left
-  rect(width, height/2, frameShad, height); //right
-
-  //outer frame
-  fill(120);
-  rect(width/2, 0, width, frameThicc); //top
-  rect(width/2, height, width, frameThicc + frameBot); //bot
-  rect(0, height/2, frameThicc, height); //left
-  rect(width, height/2, frameThicc, height); //right
+  for (let i = 0; i < 2; i ++) {
+    if (i == 0){
+      frameCol = 100;
+      frameEdge = frameShad;
+    } else if (i == 1) {
+      frameCol = 120;
+      frameEdge = frameThicc;
+    }
+    fill(frameCol);
+    rect(0, -height/2, width, frameEdge); //top
+    rect(0, height/2, width, frameEdge); //bot
+    rect(-width/2, 0, frameEdge, height); //left
+    rect(width/2, 0, frameEdge, height); //right
+  }
 }
 
 function imagetry(words, drum, bass, other, counter) {
