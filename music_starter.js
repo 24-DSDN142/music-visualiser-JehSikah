@@ -67,9 +67,9 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
     graph(vocal, 0, 1, 340);
 
-    graph(drum, drum, 1.5, 160);
+    graph(drum, drum, 1.5, 160, 5);
 
-    graph(other, drum, 2.5, -320);
+    graph(other, bass, 2.5, -320, 8);
     
 
     // push();
@@ -102,12 +102,13 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   overlay(counter);
 }
 
-function graph(wave, move, resize, displace){
+function graph(wave, map, resize, displace, move){
   let barMove;
-  if (move == 0) {
+  move = move || 0;
+  if (map === 0) {
     barMove = 0;
   } else {
-    barMove = map(move, 0, 100, -5, 5);
+    barMove = map(map, 0, 100, -move, move);
   }
   
   push();
