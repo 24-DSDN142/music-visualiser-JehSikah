@@ -7,6 +7,7 @@ let eyeNorm;
 let mouthClos;
 let mouthOpe;
 let static;
+let vignette;
 
 //timing variables
 let countMax = 20456; //end of song
@@ -22,7 +23,7 @@ let timer = 0;
 let beat = 0;
 
 //other
-let faceSize = 800;
+
 let faceOffset = 30;
 
 let barWidth = 15;
@@ -33,13 +34,15 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   rectMode(CENTER);
   imageMode(CENTER);
   noStroke();
+  textFont('Brush Script MT'); // please use CSS safe fonts
   
   if (firstRun) {
     eyeAng = loadImage("images/eyeAng.png");
     eyeNorm = loadImage("images/eyeNorm.png");
     mouthClos = loadImage("images/mouthClos.png");
     mouthOpe = loadImage("images/mouthOpe.png");
-    static = loadImage('images/static');
+    vignette = loadImage("images/vignette.png");
+    static = loadImage("images/static.gif");
 
     firstRun = false;
   }
@@ -53,32 +56,28 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
   //plays intro sequence then main song
   let oop = 60
-  let screenSize = 1;
-  // rect(0, 0, 96 * screenSize, 54 * screenSize);
 
-    //screenSize ++;
-
-  if (oop <= crash[0]) {
-   
-
-
-    //box back
-    fill(100);
-    rect(0, -30, 130, 80)
-    triangle(-65, -70, -96, -54, 0, 0);
-    triangle(65, -70, 96, -54, 0, 0);
-
-    //screen
-    fill(120);
-    rect(0, 0, 96 * 2, 54 * 2);
-    fill(100);
-    rect(0, 0, 96 * 2 - 15, 54 * 2 - 15);
-
-    image(static, 0, 0, 96 * 2 - 20, 54 * 2 - 20)
-  } else if (oop <= crash[1]) {
-
-  } else if (oop <= crash[2]) {
-
+  if (counter <= crash[0]) {
+    introscene();
+    makevignette();
+  } else if (counter <= crash[1]) {
+    push();
+    scale(1.5);
+    introscene();
+    pop();
+    makevignette();
+  } else if (counter <= crash[2]) {
+    push();
+    scale(2);
+    introscene();
+    pop();
+    makevignette();
+  } else if (counter <= crash[3]) {
+    push();
+    scale(3.5);
+    introscene();
+    pop();
+    makevignette();
   } else {
     background(40);
 
@@ -86,40 +85,98 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     if (bass >= basVol) {
     background(100, 0, 0);
      } 
-    // else if (other >= othVol) {
-    //   background(0, 0, 100);
-    // }
 
     //set sound waves during chorus, face during verse
+    
     if (counter <= chor1[1] || counter >= chor2[0] && counter <= chor2[1] || counter >= chor3[0]) {
+      let waveList = [vocal, drum, other];
+      let moveList = [];
+      let resizeList = [];
+      let displaceList = [];
+      let wave, move, resize, displace;
+      if (counter <= chor2[1]) {
+        
+      }
+
       graph(vocal, 0, 1, 340);
       graph(drum, drum, 1.5, 160);
       graph(other, drum, 2.5, -320);
+
+      //fades from static to visualiser.
+      if (counter < chor1[0]) {
+        let fadeIn = map(counter, crash[3], chor1[0], 255, 0);
+        tint(220, fadeIn);
+        image(static, 0, 0, width, height);
+      }
+
     } else if (counter > chor1[1] && counter < chor2[0] || counter > chor2[1] && counter < chor3[0]) {
-      verse(words, vocal, drum, bass, other, counter);
+      verse(words, vocal, drum, counter);
     }
     
     frame();
 
     if (bass >= basVol) {
+
       fill(200, 0, 0, 40);
-      rect(width/2, height/2, width, height);
+      rect(0, 0, width, height);
     } 
-    // else if (other >= othVol) {
-    //   fill(0, 0, 200, 40);
-    //   rect(width/2, height/2, width, height);
-    // }
   
     overlay(counter);
+
+    //end credit 
+    if (counter > chor3[1]) {
+      let fadeOut = map(counter, chor3[1], chor3[1] + 500, 0, 255);
+      fill(0, fadeOut);
+      rect(0, 0, width, height);
+
+      if (fadeOut == 255) {
+        fill(255);
+        text("Clint Eastwood", 0, 0);
+      }
+    }
+
   }
  
   pop();
 
-
-  
 }
 
-function graph(wave, move, resize, displace){
+function introscene() {
+  background(60, 70, 80);
+
+  fill(70, 80, 90);
+  rect(0, 200, width, 200)
+  
+  fill(65, 50, 40);
+  rect(0, 50, 200, 70);
+  triangle(-80, 0, -100, 65, -175, 65);
+  triangle(80, 0, 100, 65, 175, 65);
+  
+  fill(80, 60, 40);
+  rect(0, 130, 350, 130)
+
+  //box back
+  fill(100);
+  rect(0, -30, 130, 80)
+  triangle(-65, -70, -96, -54, 0, 0);
+  triangle(65, -70, 96, -54, 0, 0);
+  //screen
+  fill(120);
+  rect(0, 0, 96 * 2, 54 * 2);
+  fill(100);
+  rect(0, 0, 96 * 2 - 15, 54 * 2 - 15);
+
+  tint(220, 255);
+  image(static, 0, 0, 96 * 2 - 20, 54 * 2 - 20)
+    
+}
+
+function makevignette() {
+  tint(255, 100);
+  image(vignette, 0, 0, 960, 540);
+}
+
+function graph(wave, move, resize, displace) {
   let barMove;
   if (move == 0) {
     barMove = 0;
@@ -133,21 +190,21 @@ function graph(wave, move, resize, displace){
   pop();
 }
 
-function verse(words, vocal, drum, bass, other, counter){
+function verse(words, vocal, drum, counter) {
   push();
   scale(0.9); //fit face in screen while spinning
   //rotate(counter);
 
-  bob = map(bass, 0, 100, -30, 30);
+  bob = map(vocal, 0, 100, -30, 30);
   translate(0, bob);
-  imagetry(words, drum, bass, other, counter);
+  imagetry(words, drum, counter);
   pop();
 }
 
 function overlay(counter) {
   dead = map(counter, crash[3], 12053, 0, 40);
   fill(255, 50, 50, dead);
-  rect(width/2, height/2, width, height);
+  rect(0, 0, width, height);
 }
 
 function frame() {
@@ -172,9 +229,10 @@ function frame() {
   }
 }
 
-function imagetry(words, drum, bass, other, counter) {
+function imagetry(words, drum, counter) {
   let eyeType; 
   let mouthType;
+  let faceSize = 800;
 
   //mouth stuff, opend mouth when words are said
   if (words == ""){
@@ -207,7 +265,7 @@ function imagetry(words, drum, bass, other, counter) {
   pop();
 }
 
-function soundwave(instrument, resize){
+function soundwave(instrument, resize) {
   
   let barSlope;
   let barMap = map(instrument, 0, 100, 2, 250);
@@ -225,5 +283,3 @@ function soundwave(instrument, resize){
     rect(barSpace * i, 0, barWidth, barMap/barSlope/resize);
   }
 }
-  // textFont('Brush Script MT'); // please use CSS safe fonts
-  // textSize(24);
