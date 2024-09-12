@@ -10,11 +10,11 @@ let static;
 let vignette;
 
 //timing variables
-let countMax = 20458; //end of song
+let countMax = 20457; //end of song
 
 let chor1 = [812, 2545];
 let chor2 = [5250, 7004];
-let chor3 = [9747, 14000]; //13725ish 13580
+let chor3 = [9747, 13725]; //13725ish 13580
 let crash = [65, 84, 106, 127]; //intro crash cymbal times
 
 //other
@@ -31,12 +31,12 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   noStroke();
   
   if (firstRun) {
-    eyeAng = loadImage("images/eyeAng.png");
-    eyeNorm = loadImage("images/eyeNorm.png");
-    mouthClos = loadImage("images/mouthClos.png");
-    mouthOpe = loadImage("images/mouthOpe.png");
-    vignette = loadImage("images/vignette.png");
-    static = loadImage("images/static.gif");
+    eyeAng = loadImage('images/eyeAng.png');
+    eyeNorm = loadImage('images/eyeNorm.png');
+    mouthClos = loadImage('images/mouthClos.png');
+    mouthOpe = loadImage('images/mouthOpe.png');
+    vignette = loadImage('images/vignette.png');
+    static = loadImage('images/static.gif');
 
     firstRun = false;
   }
@@ -124,16 +124,18 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
       } else if (counter > chor1[1] && counter < chor2[0]) {
         //verse 1
         face(words, vocal, drum, counter, eyeNorm);
-
       } else if (counter > chor2[1] && counter < chor3[0] - 100) {
         //verse 2
+        push();
+        rotate(counter - chor2[1]);
         face(words, vocal, drum, counter, eyeAng);
-
+        pop();
       } else if (counter >= chor3[0] - 100 && counter < chor3[0]) {
         //zoom out verse 2
         zoom = chor3[0] - counter;
         zoomMap = map(zoom, 100, 0, 1, 0);
         push();
+        rotate(counter - chor2[1]);
         scale(zoomMap);
         face(words, vocal, drum, counter, eyeAng);
         pop();
@@ -152,7 +154,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
     //end credit = counter > chor3[1]
     let outro = countMax - chor3[1];
-    let outroBeat = outro / 10;
+    let outroBeat = outro / 12;
     let fadeOut = map(counter, chor3[1], chor3[1] + 1000, 0, 255);
     if (counter > chor3[1]) {
       fill(0, fadeOut);
@@ -161,7 +163,6 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
       let title = 100;
       let sub = 70;
       let suber = 50;
-
       if (fadeOut >= 260) {
         textFont('Verdana'); // please use CSS safe fonts
         if (bass >= basVol && counter > chor1[1]) {
@@ -172,33 +173,33 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
         }
         fill(255);
 
-        if (counter < outroBeat*2 + chor3[1]) {
+        if (counter < outroBeat*3 + chor3[1]) {
           credittext('Clint Eastwood', title, -50);
           credittext('By Gorillaz', sub, 50);
-        } else if (counter < outroBeat*3 + chor3[1]) {
+        } else if (counter < outroBeat*4 + chor3[1]) {
           credittext('Music Visualiser', sub, -50);
           credittext('By Jess', suber, 50);
-        } else if (counter < outroBeat*4 + chor3[1]) {
-          credittext('Honourable Mentions', sub, -50);
-          credittext('Hunter', title, 50);
         } else if (counter < outroBeat*5 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext('Phoebe', title, 50);
+          credittext('Hunter', title, 50);
         } else if (counter < outroBeat*6 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext("Phoebe's Rats", sub, 50);
+          credittext('Phoebe', title, 50);
         } else if (counter < outroBeat*7 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext("My Mum & Dad", sub, 50);
-        } else if (counter >= outroBeat*7 + chor3[1]) {
+          credittext("Phoebe's Rats", sub, 50);
+        } else if (counter < outroBeat*8 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext("A bird I saw once", sub, 50);
-        } else if (counter >= outroBeat*8 + chor3[1]) {
+          credittext('My Mum & Dad', suber, 50);
+        } else if (counter < outroBeat*9 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext("Noah the dog", sub, 50);
-        } else if (counter >= outroBeat*9 + chor3[1]) {
+          credittext('A bird I saw once', suber, 50);
+        } else if (counter < outroBeat*10 + chor3[1]) {
           credittext('Honourable Mentions', sub, -50);
-          credittext("and You", title, 50);
+          credittext('Noah the dog', suber, 50);
+        } else if (counter < outroBeat*11 + chor3[1]) {
+          credittext('Honourable Mentions', sub, -50);
+          credittext('and You', title, 50);
         }
         
       }
